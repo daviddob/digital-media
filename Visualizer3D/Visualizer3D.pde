@@ -1,5 +1,11 @@
+import peasy.*;
+import peasy.org.apache.commons.math.*;
+import peasy.org.apache.commons.math.geometry.*;
+import peasy.test.*;
+
 //This requires the minim library which can be installed from
 //Sketch->ImportLibrary->AddLibrary->"Minim"->install
+
 import ddf.minim.*;
 import ddf.minim.signals.*; 
 import ddf.minim.analysis.*;
@@ -13,6 +19,7 @@ int timestamp = 0;
 AudioPlayer mp3;
 float[] spectrum;
 LinkedList<float[]> hist = new LinkedList<float[]>();
+PeasyCam camera;
 
 void setup() {
   size(1000, 500, P3D);
@@ -24,9 +31,21 @@ void setup() {
   fft = new FFT(mp3.bufferSize(), mp3.sampleRate());
   camera(width/2, height/2-150, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0);
   spectrum = new float[fft.specSize()];
+  camera = new PeasyCam(this, width/2, height/2+50, 0, 330);
+  camera.rotateX(.5);
+  camera.setSuppressRollRotationMode();
+}
+
+void keyPressed(){
+  camera.lookAt(width/2, height/2+50, -1040);
+  camera.setRotations(2.79, 0, -3.14);
 }
 
 void draw() {
+    println("Rotations:");
+    println(camera.getRotations());
+  //println("Postition:"+camera.getPosition());
+  //camera(70*sin(frameCount*.02),70*cos(frameCount*.02), 70,width/2, height/2,0,0,1,0);
   background(0);
   fft.forward(mp3.mix);
   mp3.play();
