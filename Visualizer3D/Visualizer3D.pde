@@ -26,6 +26,7 @@ void setup() {
   frameRate(30);
   minim = new Minim(this);
   mp3 = minim.loadFile("dub.mp3", 2048);
+  //mp3 = minim.loadFile("song_of_seven_sorrows.mp3", 2048);
   mp3.loop();
   fft = new FFT(mp3.bufferSize(), mp3.sampleRate());
   spectrum = new float[fft.specSize()];
