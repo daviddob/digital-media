@@ -25,22 +25,30 @@ int index = 0;
 int incomingByte = 0;   // for incoming serial data
 
 void setup(){
-pinMode(LED1, OUTPUT);
-pinMode(LED2, OUTPUT);
-pinMode(LED3, OUTPUT);
-pinMode(LED4, OUTPUT);
-pinMode(LED5, OUTPUT);
-pinMode(LED6, OUTPUT);
-pinMode(LED7, OUTPUT);
-pinMode(LED8, OUTPUT);
-pinMode(LED9, OUTPUT);
-pinMode(LED10, OUTPUT);
-
-//strtodec();
-defaultlight();
-Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(LED3, OUTPUT);
+  pinMode(LED4, OUTPUT);
+  pinMode(LED5, OUTPUT);
+  pinMode(LED6, OUTPUT);
+  pinMode(LED7, OUTPUT);
+  pinMode(LED8, OUTPUT);
+  pinMode(LED9, OUTPUT);
+  pinMode(LED10, OUTPUT);
+  
+  //strtodec();
+  defaultlight();
+  Serial.begin(9600);     // opens serial port, sets data rate to 9600 bps
 }
 
+
+//  1
+//  1
+// 1 1 
+// 111 
+//1   1
+// Following arrays are of the above format with the each number representing a 5
+// bit binary array top to bottom ex above is for the letter A.
 int a[] = {1, 6, 26, 6, 1};
 int b[] = {31, 21, 21, 10, 0};
 int c[] = {14, 17, 17, 10, 0};
@@ -68,74 +76,85 @@ int x[] = {17, 10, 4, 10, 17};
 int y[] = {17, 10, 4, 8, 16};
 int z[] = {19, 21, 21, 25, 0};
 
+
+//Special characters and debugging characters
 int eos[] = {0, 1, 0, 0, 0};
 int excl[] = {0, 29, 0, 0, 0};
 int ques[] = {8, 19, 20, 8, 0};
 int space[] = {0, 0, 0, 0, 0};
 int test[] = {31, 31, 31, 31, 31};
 
+//Sets the leds to either be on or off for a given character on a given line (blue or orange)
+//LOW is on, High is off
+
 void displayLine(int line, int row){
-int myline;
-myline = line;
-if (row == 0){
-  if (myline>=16) {digitalWrite(LED5, LOW); myline-=16;} else {digitalWrite(LED5, HIGH);}
-  if (myline>=8)  {digitalWrite(LED4, LOW); myline-=8;}  else {digitalWrite(LED4, HIGH);}
-  if (myline>=4)  {digitalWrite(LED3, LOW); myline-=4;}  else {digitalWrite(LED3, HIGH);}
-  if (myline>=2)  {digitalWrite(LED2, LOW); myline-=2;}  else {digitalWrite(LED2, HIGH);}
-  if (myline>=1)  {digitalWrite(LED1, LOW); myline-=1;}  else {digitalWrite(LED1, HIGH);}
-}
-if (row == 1){
-  if (myline>=16) {digitalWrite(LED10, LOW); myline-=16;} else {digitalWrite(LED10, HIGH);}
-  if (myline>=8)  {digitalWrite(LED9, LOW); myline-=8;}  else {digitalWrite(LED9, HIGH);}
-  if (myline>=4)  {digitalWrite(LED8, LOW); myline-=4;}  else {digitalWrite(LED8, HIGH);}
-  if (myline>=2)  {digitalWrite(LED7, LOW); myline-=2;}  else {digitalWrite(LED7, HIGH);}
-  if (myline>=1)  {digitalWrite(LED6, LOW); myline-=1;}  else {digitalWrite(LED6, HIGH);}
-}
+  int myline;
+  myline = line;
+  if (row == 0){
+    if (myline>=16) {digitalWrite(LED5, LOW); myline-=16;} else {digitalWrite(LED5, HIGH);}
+    if (myline>=8)  {digitalWrite(LED4, LOW); myline-=8;}  else {digitalWrite(LED4, HIGH);}
+    if (myline>=4)  {digitalWrite(LED3, LOW); myline-=4;}  else {digitalWrite(LED3, HIGH);}
+    if (myline>=2)  {digitalWrite(LED2, LOW); myline-=2;}  else {digitalWrite(LED2, HIGH);}
+    if (myline>=1)  {digitalWrite(LED1, LOW); myline-=1;}  else {digitalWrite(LED1, HIGH);}
+  }
+  if (row == 1){
+    if (myline>=16) {digitalWrite(LED10, LOW); myline-=16;} else {digitalWrite(LED10, HIGH);}
+    if (myline>=8)  {digitalWrite(LED9, LOW); myline-=8;}  else {digitalWrite(LED9, HIGH);}
+    if (myline>=4)  {digitalWrite(LED8, LOW); myline-=4;}  else {digitalWrite(LED8, HIGH);}
+    if (myline>=2)  {digitalWrite(LED7, LOW); myline-=2;}  else {digitalWrite(LED7, HIGH);}
+    if (myline>=1)  {digitalWrite(LED6, LOW); myline-=1;}  else {digitalWrite(LED6, HIGH);}
+  }
 }
 
+//Brute force method to display characters takes in ascii values from the serial bus
+//looks up their corresponding binary array and writes it to the display
 void displayChar(int let, int row){
-if (let == 65){for (int i = 0; i <5; i++){displayLine(a[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 66){for (int i = 0; i <5; i++){displayLine(b[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 67){for (int i = 0; i <5; i++){displayLine(c[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 68){for (int i = 0; i <5; i++){displayLine(d[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 69){for (int i = 0; i <5; i++){displayLine(e[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 70){for (int i = 0; i <5; i++){displayLine(f[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 71){for (int i = 0; i <5; i++){displayLine(g[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 72){for (int i = 0; i <5; i++){displayLine(h[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 73){for (int it = 0; it <5; it++){displayLine(i[it], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 74){for (int i = 0; i <5; i++){displayLine(j[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 75){for (int i = 0; i <5; i++){displayLine(k[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 76){for (int i = 0; i <5; i++){displayLine(l[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 77){for (int i = 0; i <5; i++){displayLine(m[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 78){for (int i = 0; i <5; i++){displayLine(n[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 79){for (int i = 0; i <5; i++){displayLine(o[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 80){for (int i = 0; i <5; i++){displayLine(p[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 81){for (int i = 0; i <5; i++){displayLine(q[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 82){for (int i = 0; i <5; i++){displayLine(r[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 83){for (int i = 0; i <5; i++){displayLine(s[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 84){for (int i = 0; i <5; i++){displayLine(t[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 85){for (int i = 0; i <5; i++){displayLine(u[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 86){for (int i = 0; i <5; i++){displayLine(v[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 87){for (int i = 0; i <5; i++){displayLine(w[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 88){for (int i = 0; i <5; i++){displayLine(x[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 89){for (int i = 0; i <5; i++){displayLine(y[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 90){for (int i = 0; i <5; i++){displayLine(z[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 33){for (int i = 0; i <5; i++){displayLine(excl[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 63){for (int i = 0; i <5; i++){displayLine(ques[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 39){for (int i = 0; i <5; i++){displayLine(eos[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 32){for (int i = 0; i <5; i++){displayLine(space[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-if (let == 116){for (int i = 0; i <5; i++){displayLine(test[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
-delay(charBreak);
+  if (let == 65){for (int i = 0; i <5; i++){displayLine(a[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 66){for (int i = 0; i <5; i++){displayLine(b[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 67){for (int i = 0; i <5; i++){displayLine(c[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 68){for (int i = 0; i <5; i++){displayLine(d[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 69){for (int i = 0; i <5; i++){displayLine(e[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 70){for (int i = 0; i <5; i++){displayLine(f[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 71){for (int i = 0; i <5; i++){displayLine(g[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 72){for (int i = 0; i <5; i++){displayLine(h[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 73){for (int it = 0; it <5; it++){displayLine(i[it], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 74){for (int i = 0; i <5; i++){displayLine(j[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 75){for (int i = 0; i <5; i++){displayLine(k[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 76){for (int i = 0; i <5; i++){displayLine(l[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 77){for (int i = 0; i <5; i++){displayLine(m[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 78){for (int i = 0; i <5; i++){displayLine(n[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 79){for (int i = 0; i <5; i++){displayLine(o[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 80){for (int i = 0; i <5; i++){displayLine(p[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 81){for (int i = 0; i <5; i++){displayLine(q[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 82){for (int i = 0; i <5; i++){displayLine(r[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 83){for (int i = 0; i <5; i++){displayLine(s[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 84){for (int i = 0; i <5; i++){displayLine(t[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 85){for (int i = 0; i <5; i++){displayLine(u[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 86){for (int i = 0; i <5; i++){displayLine(v[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 87){for (int i = 0; i <5; i++){displayLine(w[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 88){for (int i = 0; i <5; i++){displayLine(x[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 89){for (int i = 0; i <5; i++){displayLine(y[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 90){for (int i = 0; i <5; i++){displayLine(z[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 33){for (int i = 0; i <5; i++){displayLine(excl[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 63){for (int i = 0; i <5; i++){displayLine(ques[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 39){for (int i = 0; i <5; i++){displayLine(eos[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 32){for (int i = 0; i <5; i++){displayLine(space[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  if (let == 116){for (int i = 0; i <5; i++){displayLine(test[i], row);delayMicroseconds(delayTime);}displayLine(0, row);}
+  delay(charBreak);
 }
 
-void displayString(){              // int is length of string, should be one less that total length 
-
+//Prints the string to the 5 leds one character at a time keeping track of
+//individual arrays for top and bottom lines (blue/orange)
+// int is length of string, should be one less that total length 
+void displayString(){ 
+  // print green             
   if(showgreen){
-   for (int i = 1; i < greensize; i++){    // print green
+   for (int i = 1; i < greensize; i++){    
       displayChar(greenlist[i], 1);
     }
   } else {
-    for (int i = 1; i < bluesize; i++){          // print blue
+    // print blue
+    for (int i = 1; i < bluesize; i++){          
       displayChar(bluelist[i], 0);
     }
   }  
@@ -146,22 +165,23 @@ void displayString(){              // int is length of string, should be one les
   }
 }
 
-void strtodec() {                         // sets charlist to a specific string
-    
-    char str[13] = "bHULLO WORLD";
-    int i=0;
-    int temp = 0;
-
-    while(str[i]) {
-       temp = str[i++];
-       bluelist[i] = temp;  
-//       greenlist[i] = temp;
-    }   
-    bluesize = i-1;    
-//    greensize = i -1;
+// sets charlist to a specific string
+void strtodec() {                         
+  char str[13] = "bHULLO WORLD";
+  int i=0;
+  int temp = 0;
+  
+  while(str[i]) {
+     temp = str[i++];
+     bluelist[i] = temp;  
+  // greenlist[i] = temp;
+  }   
+  bluesize = i-1;    
+  // greensize = i -1;
 }
 
-void defaultlight(){                      // turns off LEDs
+//Default sets all leds to off
+void defaultlight(){                      
   digitalWrite(LED1, HIGH);
   digitalWrite(LED2, HIGH);
   digitalWrite(LED3, HIGH);
@@ -176,34 +196,41 @@ void defaultlight(){                      // turns off LEDs
 
 
 void loop(){
+  // scans to check for serial input
+  if (Serial.available() > 0) {               
+          // reads incoming byte
+          incomingByte = Serial.read();       
+          // check to prevent overflow
+          if(index < 128){                    
+            templist[index] = incomingByte;   
+            index++;
+          }
 
-        if (Serial.available() > 0) {               // scans to check for serial input
-                
-                incomingByte = Serial.read();       // reads incoming byte
-                if(index < 128){                    // check to prevent overflow 
-                  templist[index] = incomingByte;   // add to templist at index, increase index
-                  index++;
-                }
+          // if character is 'z', denotes end of string
+          if(incomingByte == 122) {   
+            // if the first character is 'g', set to green            
+            if(templist[0] == 103) {          
+              for(int i = 0; i < 256; i++) { 
+                // copy templist to charlist to have repeat as current string 
+                greenlist[i] = templist[i];   
+              }
+              showgreen = true;
+              // copy index to greensize to get length of the green string for iteration
+              greensize = index;               
+            } else {
+              for(int i = 0; i < 128; i++) {
+                bluelist[i] = templist[i];   
+              }
+              showgreen = false;
+              // copy index to bluesize to get length of the blue string for iteration
+              bluesize = index;               
+            }                                 
+            index = 0;                        
+          }     
 
-                if(incomingByte == 122) {              // if character is 'z', denotes end of string
-                  if(templist[0] == 103) {          // if the first character is 'g', set to green 
-                    for(int i = 0; i < 256; i++) {  // iterates through templist
-                      greenlist[i] = templist[i];   // copy templist to charlist to have repeat as current string
-                    }
-                    showgreen = true;
-                    greensize = index;               // copy index to greensize to get length of the green string for iteration
-                  } else {
-                    for(int i = 0; i < 128; i++) {
-                      bluelist[i] = templist[i];   
-                    }
-                    showgreen = false;
-                    bluesize = index;               // copy index to bluesize to get length of the blue string for iteration
-                  }                                 
-                  index = 0;                        // reset index to zero
-                }     
-                
-        } else {                                    // else is used to prevent a queue from building up while waiting for input 
-          displayString();
-          delay(10);
-        }
+  } else {                                     
+    // else is used to prevent a queue from building up while waiting for input
+    displayString();
+    delay(10);
+  }
 }

@@ -4,7 +4,7 @@ from slackclient import SlackClient
 
 BOT_NAME = 'bananabot'
 
-slack_client = SlackClient('xoxb-100949172436-Mnko99U0sJryXKJ5NGhwrE1f')
+slack_client = SlackClient('API_KEY_HERE')
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from slacker import Slacker
 
-slack = Slacker('xoxp-23584478294-23583487255-80722151107-ad2150f3a7')
+slack = Slacker('API_KEY_HERE')
 
 # Send a message to #general channel
 slack.chat.post_message('#silverman', 'Running api')

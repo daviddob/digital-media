@@ -5,7 +5,6 @@ import json
 import time
 import datetime
 import sys
-
 from slackclient import SlackClient
 from pprint import pprint
 
@@ -23,93 +22,42 @@ os.system('rm bt.txt')
 ser = serial.Serial(bluetooth, 9600) # Establish the connection on a specific port
  # Convert the decimal number to ASCII then send it to the Arduino
 
-
-
 BOT_NAME = 'revlis'
 
 CHANNEL_ARRAY = []
 CHANNEL_MAP = {}
 
-SLACK_CLIENT = SlackClient('xoxb-100949172436-Mnko99U0sJryXKJ5NGhwrE1f')
+SLACK_CLIENT = SlackClient('API_KEY_HERE')
 BOT_ID = 'U2YTX52CU'
 AT_BOT = "<@" + BOT_ID + ">"
 
 CONFIG = 'config.json'
 
-# def is_int(val):
-#     '''
-#         Helper fucntion to determain whether or not a string is a number.
-#     '''
-#     try:
-#         if val.isdigit():
-#             #print("Val is true: " + val)
-#             return True
-#     except AttributeError:
-#         #print("Val is false: " + val)
-#         return False
-#
-# def is_sudoer(user):
-#     with open(CONFIG, 'r') as config_file:
-#         config_json = json.load(config_file)
-#
-#         for sudoer in config_json['sudoers']['members']:
-#             #print(sudoer)
-#             if user == sudoer:
-#                 return True
-#         return False
-#
-# def add_sudoer(user):
-#     with open(CONFIG, 'r+') as config_file:
-#         config_json = json.load(config_file)
-#
-#         config_json['sudoers']['members'].append(user)
-#
-#         config_file.seek(0)
-#         json.dump(config_json, config_file, indent=4)
-#
-#     SLACK_CLIENT.api_call("chat.postMessage", channel=channel, text='<@'+user+'> has been added to sudoers.', username=BOT_NAME)
-
-
 def get_channels(bot_id):
     channel_list = SLACK_CLIENT.api_call('channels.list')
     group_list = SLACK_CLIENT.api_call('groups.list')
-
     bot_channels = []
 
-    #print(SLACK_CLIENT.api_call('channels.info', channel="C0VN9R41F"))
-
     for channel in channel_list['channels']:
-
         if not channel['is_archived']:
             channel_id = channel['id']
-
             channel_info = SLACK_CLIENT.api_call('channels.info', channel=channel_id)
-
             #print(channel_info)
-
             for member in channel_info['channel']['members']:
                 if BOT_ID == member:
                     #print('found him! in ' + channel_info['channel']['name'])
                     bot_channels.append(channel_id)
 
-
     for group in group_list['groups']:
-
         if not group['is_archived']:
             group_id = group['id']
             group_info = SLACK_CLIENT.api_call('groups.info', channel=group_id)
-
             #print(group_info)
-
             for member in group_info['group']['members']:
                 if BOT_ID == member:
                     #print('found him! in ' + group_info['group']['name'])
                     bot_channels.append(group_id)
-
     return bot_channels
-
-# def delete_message(channel, ts):
-#     SLACK_CLIENT.api_call('chat.delete', ts=ts, channel=channel)
 
 def filter_all(message_stats):
     global CHANNEL_MAP
@@ -165,18 +113,6 @@ def filter_all(message_stats):
     else:
         CHANNEL_MAP[channel] = 0, 0, {}
         #print(CHANNEL_MAP)
-
-# def get_user_from_command(command):
-#     try:
-#         user = command.split('@')[1][:-1].upper()
-#         return user
-#     except IndexError:
-#         #print('wrong format')
-#         return
-#
-# def kick_user(channel, user):
-#     #print(user)
-#     SLACK_CLIENT.api_call('groups.kick', channel=channel, user=user)
 
 def slack_commands_list(command, channel, user):
     global CHANNEL_ARRAY
